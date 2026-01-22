@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route,Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 
 // Pages
 import Home from "../pages/Home";
@@ -9,14 +14,13 @@ import Register from "../pages/Register";
 import UserDashboard from "../components/user/UserDashboard";
 import TutorDasboard from "../components/tutor/TutorDasboard";
 import AdminDashboard from "../components/admin/AdminDashboard";
-
-
+import CreateCourse from "../components/tutor/CreateCourses";
 
 // User components
 
 import CodeRoom from "../components/user/CodeRoom";
 import CodeEditor from "../components/user/CodeEditor";
-import PraticeEditor from "../components/user/PraticeEditor"
+import PraticeEditor from "../components/user/PraticeEditor";
 
 // Protected Route
 import ProtectedRoute from "./ProtectedRoute";
@@ -45,33 +49,40 @@ const AppRoutes = () => {
         />
 
         <Route
-  path="/code-room"
-  element={
-    <ProtectedRoute roles={["user", "tutor"]}>
-      <CodeRoom />
-    </ProtectedRoute>
-  }
-/>
+          path="/tutor/create-course"
+          element={
+            <ProtectedRoute role="tutor">
+              <CreateCourse />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/code-room"
+          element={
+            <ProtectedRoute roles={["user", "tutor"]}>
+              <CodeRoom />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Code Editor with Room ID */}
         <Route
           path="/code-room/:roomId"
-
           element={
             <ProtectedRoute roles={["user", "tutor"]}>
-           
               <CodeEditor />
             </ProtectedRoute>
           }
         />
         <Route
-  path="/user/practice-editor"
-  element={
-    <ProtectedRoute role="user">
-      <PraticeEditor />
-    </ProtectedRoute>
-  }
-/>
+          path="/user/practice-editor"
+          element={
+            <ProtectedRoute role="user">
+              <PraticeEditor />
+            </ProtectedRoute>
+          }
+        />
 
         {/* ================= TUTOR ROUTES ================= */}
         <Route
@@ -95,7 +106,6 @@ const AppRoutes = () => {
         {/* ================= FALLBACK ================= */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
-      
     </Router>
   );
 };
