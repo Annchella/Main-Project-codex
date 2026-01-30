@@ -25,6 +25,22 @@ const ResumeSchema = new mongoose.Schema({
             year: String,
         },
     ],
+    skills: [String],
+    projects: [
+        {
+            title: String,
+            link: String,
+            description: String,
+        }
+    ],
+    certificates: [
+        {
+            name: String,
+            issuer: String,
+            date: String,
+        }
+    ],
+    template: { type: String, default: 'classic' },
 }, { timestamps: true });
 
 

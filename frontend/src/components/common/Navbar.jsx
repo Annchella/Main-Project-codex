@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Search, Menu, X, Code2, Sparkles, User, LogIn, ChevronRight, LogOut, Settings, Award, BookOpen, Cpu, Atom, Globe, Code, Database, Network, Terminal, Layers } from "lucide-react";
+import { Search, Menu, X, Code2, User, LogIn, ChevronRight, LogOut, Settings, Award, BookOpen, Cpu, Atom, Globe, Code, Database, Network, Terminal, Layers } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import api from "../../services/api";
@@ -94,7 +94,7 @@ const Navbar = () => {
   const isActive = (path) => location.pathname === path;
 
   const navLinks = [
-    { name: "Dashboard", path: "/user/dashboard" },
+    { name: "Dashboard", path: "/user" },
     { name: "Courses", path: "/user/courses" },
     { name: "Blogs", path: "/blogs" },
     { name: "Resume Builder", path: "/resume-builder" },

@@ -3,10 +3,10 @@ import Navbar from "../common/Navbar";
 import { useNavigate } from "react-router-dom";
 import {
   Code, BookOpen, Video, Terminal, ArrowRight,
-  Zap, Users, Globe, Award, Trophy, Star,
-  MessageSquare, ChevronRight, Sparkles, Layout
+  Zap, Users, Globe, Award, Trophy,
+  MessageSquare, Layout
 } from "lucide-react";
-import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
+import { motion, useMotionValue, useTransform } from "framer-motion";
 import api from "../../services/api";
 
 const TypingCode = () => {
@@ -21,7 +21,7 @@ const TypingCode = () => {
       if (i > fullText.length) clearInterval(timer);
     }, 50);
     return () => clearInterval(timer);
-  }, []);
+  }, [fullText]);
 
   return (
     <div className="font-mono text-xs leading-relaxed text-blue-400/80">
@@ -80,7 +80,7 @@ const UserDashboard = () => {
   const [userName, setUserName] = useState("User");
   const [stats, setStats] = useState({ xp: 0, level: 1, badges: [] });
   const [isVisible, setIsVisible] = useState(false);
-  const [lastCourse, setLastCourse] = useState({ title: "Full Stack Web Development", progress: 65, id: "fs-101" });
+  const [lastCourse] = useState({ title: "Full Stack Web Development", progress: 65, id: "fs-101" });
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   const handleMouseMove = (e) => {
@@ -463,7 +463,7 @@ const UserDashboard = () => {
               icon={<Terminal className="w-8 h-8 text-slate-400" />}
               title="Resume Builder"
               desc="Craft a high-impact technical resume with AI-driven optimizations."
-              onClick={() => navigate("/user/resume-builder")}
+              onClick={() => navigate("/resume-builder")}
               color="slate"
               index={7}
             />

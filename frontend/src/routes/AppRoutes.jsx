@@ -61,6 +61,7 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
+        <Route path="/user/dashboard" element={<Navigate to="/user" />} />
         <Route
           path="/user/live-classes"
           element={
