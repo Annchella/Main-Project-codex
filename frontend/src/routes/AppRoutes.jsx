@@ -31,6 +31,8 @@ import MockInterview from "../components/user/MockInterview";
 import CoursePlayer from "../components/user/CoursePlayer";
 import TutorCourseManagement from "../components/tutor/TutorCourseManagement";
 import AdminCourseApproval from "../components/admin/AdminCourseApproval";
+import AdminPurchases from "../components/admin/AdminPurchases";
+import TutorPurchases from "../components/tutor/TutorPurchases";
 
 // Protected Route
 import ProtectedRoute from "./ProtectedRoute";
@@ -192,6 +194,14 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/tutor/purchases"
+          element={
+            <ProtectedRoute role="tutor">
+              <TutorPurchases />
+            </ProtectedRoute>
+          }
+        />
 
         {/* ================= ADMIN ROUTES ================= */}
         <Route
@@ -207,6 +217,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute role="admin">
               <AdminCourseApproval />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/purchases"
+          element={
+            <ProtectedRoute role="admin">
+              <AdminPurchases />
             </ProtectedRoute>
           }
         />

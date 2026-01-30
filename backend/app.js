@@ -36,8 +36,7 @@ const courseRoutes = require("./routes/courseRoutes");
 app.use("/api/courses", courseRoutes);
 const enrollmentRoutes = require("./routes/enrollmentRoutes");
 app.use("/api/enrollments", enrollmentRoutes);
-
-
-
+const paymentRoutes = require("./routes/paymentRoutes");
+app.use("/api/payment", paymentRoutes);
 
 module.exports = app;

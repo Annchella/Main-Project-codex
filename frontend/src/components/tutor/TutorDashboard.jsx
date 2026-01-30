@@ -92,8 +92,8 @@ const TutorDashboard = () => {
             <FeatureItem
               icon={<BarChart3 className="w-8 h-8 text-purple-400" />}
               title="Performance Stats"
-              desc="Track enrollment trends and student engagement ratings."
-              onClick={() => { }}
+              desc="Track enrollment trends and revenue performance."
+              onClick={() => navigate("/tutor/purchases")}
               color="from-purple-500/10 to-transparent"
             />
             <FeatureItem

@@ -7,6 +7,7 @@ import {
   ChevronRight, PlayCircle, Layers,
   Search, ShieldCheck, Layout
 } from "lucide-react";
+import CheckoutModal from "./CheckoutModal";
 
 const UserCourses = () => {
   const [courses, setCourses] = useState([]);
@@ -33,14 +34,29 @@ const UserCourses = () => {
     fetchData();
   }, []);
 
-  const handlePurchase = async (courseId) => {
-    setPurchasing(courseId);
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [showCheckout, setShowCheckout] = useState(false);
+
+  const handlePurchaseClick = (course) => {
+    setSelectedCourse(course);
+    setShowCheckout(true);
+  };
+
+  const handlePaymentSuccess = async () => {
     try {
-      await api.post("/enrollments/purchase", { courseId });
-      setEnrollments([...enrollments, courseId]);
-      alert("Successfully enrolled! Welcome to the mission.");
+      setPurchasing(selectedCourse._id);
+
+      // 1. Create order internally
+      const { data: order } = await api.post("/payment/create-order", { courseId: selectedCourse._id });
+
+      // 2. Finalize payment internally
+      await api.post("/payment/verify", { orderId: order.id });
+
+      setEnrollments([...enrollments, selectedCourse._id]);
+      setShowCheckout(false);
+      navigate(`/user/courses/${selectedCourse._id}/player`);
     } catch (err) {
-      alert(err.response?.data?.message || "Communication failure. Link severed.");
+      alert("Encountered an atmospheric disruption. Protocol failed.");
     } finally {
       setPurchasing(null);
     }
@@ -51,6 +67,14 @@ const UserCourses = () => {
   return (
     <div className="min-h-screen bg-[#020617] text-white font-sans selection:bg-blue-500/30">
       <Navbar />
+
+      {/* Internal Payment Modal */}
+      <CheckoutModal
+        isOpen={showCheckout}
+        course={selectedCourse}
+        onClose={() => setShowCheckout(false)}
+        onPaymentSuccess={handlePaymentSuccess}
+      />
 
       <main className="max-w-7xl mx-auto px-6 py-24">
         <header className="mb-24 relative">
@@ -175,7 +199,7 @@ const UserCourses = () => {
                       </button>
                     ) : (
                       <button
-                        onClick={() => handlePurchase(course._id)}
+                        onClick={() => handlePurchaseClick(course)}
                         disabled={purchasing === course._id}
                         className="group/btn relative px-8 py-4 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-800 text-white font-black rounded-2xl shadow-xl shadow-blue-900/20 transition-all active:scale-95 flex items-center gap-2"
                       >

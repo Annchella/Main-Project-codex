@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  @keyframes progress-fast {
+    0% { width: 0%; }
+    100% { width: 100%; }
+  }
+  .animate-progress-fast {
+    animation: progress-fast 2s ease-in-out forwards;
+  }
+}

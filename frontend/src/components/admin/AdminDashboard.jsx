@@ -33,7 +33,13 @@ const AdminDashboard = () => {
                     <StatCard icon={<Users className="text-blue-400" />} label="Total Users" value="12,482" drift="+12%" />
                     <StatCard icon={<Layers className="text-purple-400" />} label="Courses Live" value="156" drift="+4%" />
                     <StatCard icon={<ShieldCheck className="text-emerald-400" />} label="Pending Reviews" value="8" drift="Action Needed" highlight />
-                    <StatCard icon={<BarChart3 className="text-pink-400" />} label="Revenue" value="₹2.4M" drift="+18%" />
+                    <StatCard
+                        icon={<BarChart3 className="text-pink-400" />}
+                        label="Revenue"
+                        value="₹2.4M"
+                        drift="+18%"
+                        onClick={() => navigate("/admin/purchases")}
+                    />
                 </div>
 
                 <div className="grid lg:grid-cols-3 gap-8">
@@ -63,6 +69,12 @@ const AdminDashboard = () => {
                     {/* Secondary Actions */}
                     <div className="space-y-6">
                         <AdminActionItem
+                            icon={<BarChart3 className="w-5 h-5" />}
+                            title="Revenue Ledger"
+                            desc="View all purchase transactions."
+                            onClick={() => navigate("/admin/purchases")}
+                        />
+                        <AdminActionItem
                             icon={<PlusCircle className="w-5 h-5" />}
                             title="Direct Course Creation"
                             desc="Bypass tutor flow to add courses."
@@ -90,8 +102,11 @@ const AdminDashboard = () => {
     );
 };
 
-const StatCard = ({ icon, label, value, drift, highlight }) => (
-    <div className={`p-8 rounded-3xl border border-slate-800/50 bg-slate-800/20 backdrop-blur-sm ${highlight ? 'ring-1 ring-emerald-500/20' : ''}`}>
+const StatCard = ({ icon, label, value, drift, highlight, onClick }) => (
+    <div
+        onClick={onClick}
+        className={`p-8 rounded-3xl border border-slate-800/50 bg-slate-800/20 backdrop-blur-sm ${highlight ? 'ring-1 ring-emerald-500/20' : ''} ${onClick ? 'cursor-pointer hover:bg-slate-800/40 transition-all' : ''}`}
+    >
         <div className="flex justify-between items-start mb-6">
             <div className="p-3 rounded-2xl bg-slate-900 border border-slate-800">
                 {icon}
