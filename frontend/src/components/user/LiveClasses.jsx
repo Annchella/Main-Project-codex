@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import api from "../../services/api";
-import Navbar from "../common/Navbar";
 import { Video, Clock, User, ExternalLink, Calendar } from "lucide-react";
 
 const LiveClasses = () => {
@@ -30,9 +29,8 @@ const LiveClasses = () => {
 
   return (
     <div className="min-h-screen bg-slate-900 text-white font-sans selection:bg-blue-500 selection:text-white">
-      <Navbar />
 
-      <main className="max-w-7xl mx-auto px-6 py-20">
+      <main className="max-w-7xl mx-auto px-6 pb-20">
         <header className="mb-12">
           <h1 className="text-4xl lg:text-5xl font-extrabold tracking-tight mb-4">
             Upcoming <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">Live Classes</span>

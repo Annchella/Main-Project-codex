@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import api from "../../services/api";
-import Navbar from "../common/Navbar";
 import { useNavigate } from "react-router-dom";
 import { Award, Zap, ChevronRight, Search, Activity, Lock } from "lucide-react";
 
@@ -34,9 +33,9 @@ const ChallengesList = () => {
 
     return (
         <div className="min-h-screen bg-slate-900 text-white font-sans">
-            <Navbar />
 
-            <main className="max-w-7xl mx-auto px-6 py-16">
+            <main className="max-w-7xl mx-auto px-6 pb-16">
+
                 <header className="mb-12">
                     <div className="flex justify-between items-end">
                         <div>

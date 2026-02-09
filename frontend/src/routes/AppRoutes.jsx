@@ -15,6 +15,7 @@ import UserDashboard from "../components/user/UserDashboard";
 import TutorDashboard from "../components/tutor/TutorDashboard";
 import AdminDashboard from "../components/admin/AdminDashboard";
 import CreateCourse from "../components/tutor/CreateCourses";
+import EditCourse from "../components/tutor/EditCourse";
 import ScheduleLiveClass from "../components/tutor/ScheduleLiveClass";
 
 // User components
@@ -33,15 +34,24 @@ import TutorCourseManagement from "../components/tutor/TutorCourseManagement";
 import AdminCourseApproval from "../components/admin/AdminCourseApproval";
 import AdminPurchases from "../components/admin/AdminPurchases";
 import TutorPurchases from "../components/tutor/TutorPurchases";
+import TutorEnrollments from "../components/tutor/TutorEnrollments";
+import TutorPortfolio from "../components/tutor/TutorPortfolio";
+import AdminTutorApproval from "../components/admin/AdminTutorApproval";
+import AdminCourseManagement from "../components/admin/AdminCourseManagement";
 
 // Protected Route
 import ProtectedRoute from "./ProtectedRoute";
 import ResumeBuilder from "../components/user/ResumeBuilder";
 import Profile from "../components/user/Profile";
+import PublicTutorPortfolio from "../components/user/PublicTutorPortfolio";
+import Layout from "../components/common/Layout";
+import TutorDoubts from "../components/tutor/TutorDoubts";
+import NotificationManager from "../components/common/NotificationManager";
 
 const AppRoutes = () => {
   return (
     <Router>
+      <NotificationManager />
       <Routes>
         {/* Home (Loading / Auth check page) */}
         <Route path="/" element={<Home />} />
@@ -57,7 +67,9 @@ const AppRoutes = () => {
           path="/user"
           element={
             <ProtectedRoute role="user">
-              <UserDashboard />
+              <Layout>
+                <UserDashboard />
+              </Layout>
             </ProtectedRoute>
           }
         />
@@ -66,7 +78,9 @@ const AppRoutes = () => {
           path="/user/live-classes"
           element={
             <ProtectedRoute role="user">
-              <LiveClasses />
+              <Layout>
+                <LiveClasses />
+              </Layout>
             </ProtectedRoute>
           }
         />
@@ -74,7 +88,9 @@ const AppRoutes = () => {
           path="/tutor/schedule-live-class"
           element={
             <ProtectedRoute role="tutor">
-              <ScheduleLiveClass />
+              <Layout>
+                <ScheduleLiveClass />
+              </Layout>
             </ProtectedRoute>
           }
         />
@@ -83,7 +99,9 @@ const AppRoutes = () => {
           path="/tutor/create-course"
           element={
             <ProtectedRoute role="tutor">
-              <CreateCourse />
+              <Layout>
+                <CreateCourse />
+              </Layout>
             </ProtectedRoute>
           }
         />
@@ -91,7 +109,9 @@ const AppRoutes = () => {
           path="/resume-builder"
           element={
             <ProtectedRoute roles={["user", "tutor"]}>
-              <ResumeBuilder />
+              <Layout>
+                <ResumeBuilder />
+              </Layout>
             </ProtectedRoute>
           }
         />
@@ -99,7 +119,9 @@ const AppRoutes = () => {
           path="/user/courses"
           element={
             <ProtectedRoute role="user">
-              <Courses />
+              <Layout>
+                <Courses />
+              </Layout>
             </ProtectedRoute>
           }
         />
@@ -108,7 +130,9 @@ const AppRoutes = () => {
           path="/code-room"
           element={
             <ProtectedRoute roles={["user", "tutor"]}>
-              <CodeRoom />
+              <Layout>
+                <CodeRoom />
+              </Layout>
             </ProtectedRoute>
           }
         />
@@ -118,7 +142,9 @@ const AppRoutes = () => {
           path="/code-room/:roomId"
           element={
             <ProtectedRoute roles={["user", "tutor"]}>
-              <CodeEditor />
+              <Layout>
+                <CodeEditor />
+              </Layout>
             </ProtectedRoute>
           }
         />
@@ -126,7 +152,9 @@ const AppRoutes = () => {
           path="/user/practice-editor"
           element={
             <ProtectedRoute role="user">
-              <PracticeEditor />
+              <Layout>
+                <PracticeEditor />
+              </Layout>
             </ProtectedRoute>
           }
         />
@@ -134,7 +162,9 @@ const AppRoutes = () => {
           path="/user/challenges"
           element={
             <ProtectedRoute role="user">
-              <ChallengesList />
+              <Layout>
+                <ChallengesList />
+              </Layout>
             </ProtectedRoute>
           }
         />
@@ -142,7 +172,9 @@ const AppRoutes = () => {
           path="/user/challenges/:challengeId"
           element={
             <ProtectedRoute role="user">
-              <ChallengeEditor />
+              <Layout>
+                <ChallengeEditor />
+              </Layout>
             </ProtectedRoute>
           }
         />
@@ -150,7 +182,9 @@ const AppRoutes = () => {
           path="/user/leaderboard"
           element={
             <ProtectedRoute role="user">
-              <Leaderboard />
+              <Layout>
+                <Leaderboard />
+              </Layout>
             </ProtectedRoute>
           }
         />
@@ -158,15 +192,29 @@ const AppRoutes = () => {
           path="/user/mock-interview"
           element={
             <ProtectedRoute role="user">
-              <MockInterview />
+              <Layout>
+                <MockInterview />
+              </Layout>
             </ProtectedRoute>
           }
         />
         <Route
           path="/user/courses/:courseId/player"
           element={
-            <ProtectedRoute role="user">
-              <CoursePlayer />
+            <ProtectedRoute roles={["user", "tutor"]}>
+              <Layout>
+                <CoursePlayer />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tutor/profile/:id"
+          element={
+            <ProtectedRoute roles={["user", "tutor", "admin"]}>
+              <Layout>
+                <PublicTutorPortfolio />
+              </Layout>
             </ProtectedRoute>
           }
         />
@@ -174,7 +222,9 @@ const AppRoutes = () => {
           path="/user/profile"
           element={
             <ProtectedRoute role="user">
-              <Profile />
+              <Layout>
+                <Profile />
+              </Layout>
             </ProtectedRoute>
           }
         />
@@ -183,7 +233,9 @@ const AppRoutes = () => {
           path="/tutor"
           element={
             <ProtectedRoute role="tutor">
-              <TutorDashboard />
+              <Layout>
+                <TutorDashboard />
+              </Layout>
             </ProtectedRoute>
           }
         />
@@ -191,7 +243,19 @@ const AppRoutes = () => {
           path="/tutor/manage-courses"
           element={
             <ProtectedRoute role="tutor">
-              <TutorCourseManagement />
+              <Layout>
+                <TutorCourseManagement />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tutor/courses/:id/edit"
+          element={
+            <ProtectedRoute role="tutor">
+              <Layout>
+                <EditCourse />
+              </Layout>
             </ProtectedRoute>
           }
         />
@@ -199,7 +263,39 @@ const AppRoutes = () => {
           path="/tutor/purchases"
           element={
             <ProtectedRoute role="tutor">
-              <TutorPurchases />
+              <Layout>
+                <TutorPurchases />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tutor/enrollments"
+          element={
+            <ProtectedRoute role="tutor">
+              <Layout>
+                <TutorEnrollments />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tutor/portfolio"
+          element={
+            <ProtectedRoute role="tutor">
+              <Layout>
+                <TutorPortfolio />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tutor/doubts"
+          element={
+            <ProtectedRoute role="tutor">
+              <Layout>
+                <TutorDoubts />
+              </Layout>
             </ProtectedRoute>
           }
         />
@@ -209,7 +305,9 @@ const AppRoutes = () => {
           path="/admin"
           element={
             <ProtectedRoute role="admin">
-              <AdminDashboard />
+              <Layout>
+                <AdminDashboard />
+              </Layout>
             </ProtectedRoute>
           }
         />
@@ -217,7 +315,19 @@ const AppRoutes = () => {
           path="/admin/approvals"
           element={
             <ProtectedRoute role="admin">
-              <AdminCourseApproval />
+              <Layout>
+                <AdminCourseApproval />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/tutor-approvals"
+          element={
+            <ProtectedRoute role="admin">
+              <Layout>
+                <AdminTutorApproval />
+              </Layout>
             </ProtectedRoute>
           }
         />
@@ -225,11 +335,23 @@ const AppRoutes = () => {
           path="/admin/purchases"
           element={
             <ProtectedRoute role="admin">
-              <AdminPurchases />
+              <Layout>
+                <AdminPurchases />
+              </Layout>
             </ProtectedRoute>
           }
         />
         {/* ================= FALLBACK ================= */}
+        <Route
+          path="/admin/course-management"
+          element={
+            <ProtectedRoute role="admin">
+              <Layout>
+                <AdminCourseManagement />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>

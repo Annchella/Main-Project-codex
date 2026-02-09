@@ -13,6 +13,7 @@ app.use(express.json());
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/user", require("./routes/userRoutes"));
 app.use("/api/resumes", require("./routes/resumeRoutes"));
+app.use("/api/admin", require("./routes/adminRoutes"));
 
 
 app.use(cors());
@@ -38,5 +39,7 @@ const enrollmentRoutes = require("./routes/enrollmentRoutes");
 app.use("/api/enrollments", enrollmentRoutes);
 const paymentRoutes = require("./routes/paymentRoutes");
 app.use("/api/payment", paymentRoutes);
+const chatRoutes = require("./routes/chatRoutes");
+app.use("/api/chats", chatRoutes);
 
 module.exports = app;

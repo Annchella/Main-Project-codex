@@ -8,6 +8,10 @@ const ResumeSchema = new mongoose.Schema({
         email: String,
         phone: String,
         summary: String,
+        location: String,
+        website: String,
+        linkedin: String,
+        jobTitle: String,
     },
     experience: [
         {

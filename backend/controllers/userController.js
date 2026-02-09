@@ -28,3 +28,35 @@ exports.getXPStats = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+exports.updateTutorPortfolio = async (req, res) => {
+  try {
+    const { bio, specialization, photo, experience, qualification } = req.body;
+
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    user.bio = bio || user.bio;
+    user.specialization = specialization || user.specialization;
+    user.photo = photo || user.photo;
+    user.experience = experience || user.experience;
+    user.qualification = qualification || user.qualification;
+    user.tutorStatus = "pending"; // Reset to pending for approval
+
+    await user.save();
+    res.json({ message: "Portfolio submitted for approval", user });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getPublicProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id)
+      .select("name qualification experience bio photo specialization role");
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "../common/Navbar";
 import { useNavigate } from "react-router-dom";
 import {
   Code, BookOpen, Video, Terminal, ArrowRight,
@@ -8,6 +7,7 @@ import {
 } from "lucide-react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import api from "../../services/api";
+import Footer from "../common/Footer";
 
 const TypingCode = () => {
   const [text, setText] = useState("");
@@ -80,7 +80,8 @@ const UserDashboard = () => {
   const [userName, setUserName] = useState("User");
   const [stats, setStats] = useState({ xp: 0, level: 1, badges: [] });
   const [isVisible, setIsVisible] = useState(false);
-  const [lastCourse] = useState({ title: "Full Stack Web Development", progress: 65, id: "fs-101" });
+  const [courses, setCourses] = useState([]);
+  const [loadingCourses, setLoadingCourses] = useState(true);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   const handleMouseMove = (e) => {
@@ -93,26 +94,51 @@ const UserDashboard = () => {
     const savedName = localStorage.getItem("name");
     if (savedName) setUserName(savedName);
 
-    const fetchStats = async () => {
+    const fetchDashboardData = async () => {
+      // Fetch stats independently
       try {
-        const res = await api.get("/user/stats");
-        setStats(res.data);
+        const statsRes = await api.get("/user/stats");
+        if (statsRes.data) setStats(statsRes.data);
       } catch (err) {
-        console.error("Failed to fetch stats");
+        console.error("Stats fetch failed");
+      }
+
+      // Fetch enrollments or created courses
+      try {
+        const enrollmentRes = await api.get("/enrollments/my");
+        if (enrollmentRes.data && enrollmentRes.data.length > 0) {
+          setCourses(enrollmentRes.data);
+        } else {
+          // If no enrollments, check if they are a tutor and show their own courses
+          const userRes = await api.get("/user/profile");
+          if (userRes.data?.role === 'tutor' || userRes.data?.role === 'admin') {
+            const coursesRes = await api.get("/courses/my");
+            const transformed = (coursesRes.data || []).map(c => ({ course: c, progress: 100 }));
+            setCourses(transformed);
+          } else {
+            setCourses([]);
+          }
+        }
+      } catch (err) {
+        console.error("Courses fetch failed");
+      } finally {
+        setLoadingCourses(false);
       }
     };
-    fetchStats();
+    fetchDashboardData();
   }, []);
+
+  const lastCourse = courses.length > 0 ? courses[0].course : null;
+  const progress = courses.length > 0 ? (courses[0].progress || 0) : 0;
 
   return (
     <div
       onMouseMove={handleMouseMove}
       className="min-h-screen bg-[#020617] text-white font-sans selection:bg-blue-500/30 overflow-x-hidden"
     >
-      <Navbar />
 
       {/* Cinematic Hero Section */}
-      <section className="relative pt-32 pb-20 overflow-hidden">
+      <section className="relative pb-20 overflow-hidden">
         {/* Advanced Background System */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           {/* Animated Grid with Perspective */}
@@ -237,62 +263,143 @@ const UserDashboard = () => {
               </div>
 
               {/* Resume Learning Card - Modernized */}
-              <motion.div
-                initial={{ x: 50, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-                className="lg:w-5/12 relative group"
-              >
-                <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/20 via-indigo-500/20 to-purple-500/20 rounded-[3rem] blur-3xl opacity-0 group-hover:opacity-100 transition duration-1000"></div>
+              <div className="lg:w-5/12 flex flex-col gap-8">
+                {/* Resume Learning Card - Modernized */}
+                <motion.div
+                  initial={{ x: 50, opacity: 0 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                  className="relative group"
+                >
+                  <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/20 via-indigo-500/20 to-purple-500/20 rounded-[3rem] blur-3xl opacity-0 group-hover:opacity-100 transition duration-1000"></div>
 
-                <div className="relative bg-[#020617]/80 border border-slate-800/50 rounded-[3rem] p-10 backdrop-blur-3xl overflow-hidden shadow-2xl shadow-blue-500/5">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 blur-[50px] rounded-full"></div>
+                  <div className="relative bg-[#020617]/80 border border-slate-800/50 rounded-[3rem] p-10 backdrop-blur-3xl overflow-hidden shadow-2xl shadow-blue-500/5 h-[360px] flex flex-col justify-center">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 blur-[50px] rounded-full"></div>
 
-                  <div className="flex justify-between items-start mb-8 relative z-10">
-                    <div className="space-y-1">
-                      <h3 className="text-[10px] font-black text-blue-500 uppercase tracking-[0.3em] mb-2">Resume Session</h3>
-                      <p className="text-2xl font-black tracking-tight leading-tight">{lastCourse.title}</p>
-                    </div>
-                    <motion.div
-                      animate={{ rotate: [0, 10, -10, 0] }}
-                      transition={{ duration: 5, repeat: Infinity }}
-                      className="p-4 bg-blue-600/10 rounded-2xl border border-blue-500/20 text-blue-400 shadow-inner"
-                    >
-                      <BookOpen className="w-7 h-7" />
-                    </motion.div>
+                    {loadingCourses ? (
+                      <div className="flex flex-col items-center justify-center space-y-4 animate-pulse">
+                        <div className="w-12 h-12 bg-slate-800 rounded-2xl"></div>
+                        <div className="h-4 bg-slate-800 rounded w-3/4"></div>
+                        <div className="h-2 bg-slate-800 rounded w-1/2"></div>
+                      </div>
+                    ) : lastCourse ? (
+                      <>
+                        <div className="flex justify-between items-start mb-8 relative z-10">
+                          <div className="space-y-1">
+                            <h3 className="text-[10px] font-black text-blue-500 uppercase tracking-[0.3em] mb-2">Resume Session</h3>
+                            <p className="text-2xl font-black tracking-tight leading-tight">{lastCourse.title}</p>
+                          </div>
+                          <motion.div
+                            animate={{ rotate: [0, 10, -10, 0] }}
+                            transition={{ duration: 5, repeat: Infinity }}
+                            className="p-4 bg-blue-600/10 rounded-2xl border border-blue-500/20 text-blue-400 shadow-inner"
+                          >
+                            <BookOpen className="w-7 h-7" />
+                          </motion.div>
+                        </div>
+
+                        <div className="space-y-6 relative z-10">
+                          <div className="flex justify-between text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                            <span>Module Integrity</span>
+                            <span className="text-blue-400">{progress}% Completed</span>
+                          </div>
+                          <div className="h-2.5 w-full bg-slate-900 rounded-full overflow-hidden p-0.5 border border-slate-800/50">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              animate={{ width: `${progress}%` }}
+                              transition={{ duration: 1.5, delay: 0.8, ease: "circOut" }}
+                              className="h-full bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full relative"
+                            >
+                              <motion.div
+                                animate={{ x: ["-100%", "300%"] }}
+                                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                                className="absolute top-0 h-full w-20 bg-white/20 blur-sm"
+                              ></motion.div>
+                            </motion.div>
+                          </div>
+                        </div>
+
+                        <motion.button
+                          whileHover={{ scale: 1.02, backgroundColor: "#fff" }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => navigate(`/user/courses/${lastCourse._id}/player`)}
+                          className="mt-10 w-full py-5 bg-slate-100 text-black font-black rounded-2xl flex items-center justify-center gap-3 transition-all shadow-2xl shadow-white/5 active:shadow-none"
+                        >
+                          CONTINUE STUDY <ArrowRight className="w-5 h-5" />
+                        </motion.button>
+                      </>
+                    ) : (
+                      <div className="flex flex-col items-center text-center space-y-6 relative z-10">
+                        <div className="p-6 bg-slate-900/50 rounded-3xl border border-slate-800">
+                          <Globe className="w-12 h-12 text-blue-500/50" />
+                        </div>
+                        <div className="space-y-2">
+                          <h3 className="text-xl font-black uppercase italic tracking-tighter">No Active Protocols</h3>
+                          <p className="text-slate-500 text-sm font-medium">Your learning matrix is currently empty.<br />Initiate a new development cycle.</p>
+                        </div>
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={() => navigate("/user/courses")}
+                          className="px-8 py-4 bg-blue-600 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-3 shadow-[0_0_30px_rgba(37,99,235,0.2)]"
+                        >
+                          Browse Academy <ArrowRight className="w-4 h-4" />
+                        </motion.button>
+                      </div>
+                    )}
                   </div>
+                </motion.div>
 
-                  <div className="space-y-6 relative z-10">
-                    <div className="flex justify-between text-[10px] font-black text-slate-500 uppercase tracking-widest">
-                      <span>Module Integrity</span>
-                      <span className="text-blue-400">{lastCourse.progress}% Completed</span>
+                {/* Sleek Neural Terminal Widget */}
+                <motion.div
+                  initial={{ x: 50, opacity: 0 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.8, delay: 0.5 }}
+                  className="relative group"
+                >
+                  <div className="absolute -inset-2 bg-blue-500/5 rounded-[2.5rem] blur-2xl opacity-0 group-hover:opacity-100 transition duration-700"></div>
+
+                  <div className="relative bg-slate-900/40 border border-white/5 rounded-[2.5rem] p-8 backdrop-blur-2xl overflow-hidden group-hover:border-blue-500/20 transition-all duration-500">
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center gap-4">
+                        <div className="p-3 bg-blue-500/10 rounded-xl text-blue-400">
+                          <Terminal className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <h3 className="text-[9px] font-black text-slate-500 uppercase tracking-[0.4em] mb-1">Access Protocol</h3>
+                          <p className="text-lg font-black tracking-tight uppercase italic text-white/90">CODE ROOM</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></div>
+                        <span className="text-[8px] font-bold text-blue-500/50 uppercase tracking-widest">Online</span>
+                      </div>
                     </div>
-                    <div className="h-2.5 w-full bg-slate-900 rounded-full overflow-hidden p-0.5 border border-slate-800/50">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: `${lastCourse.progress}%` }}
-                        transition={{ duration: 1.5, delay: 0.8, ease: "circOut" }}
-                        className="h-full bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full relative"
+
+                    <div className="flex gap-4">
+                      <motion.button
+                        whileHover={{ scale: 1.02, backgroundColor: "rgba(59, 130, 246, 0.05)" }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => navigate("/code-room")}
+                        className="flex-1 flex items-center justify-center gap-3 py-4 bg-slate-950/40 border border-white/5 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-white transition-all"
                       >
-                        <motion.div
-                          animate={{ x: ["-100%", "300%"] }}
-                          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                          className="absolute top-0 h-full w-20 bg-white/20 blur-sm"
-                        ></motion.div>
-                      </motion.div>
+                        <Users className="w-4 h-4" />
+                        Join ROOM
+                      </motion.button>
+
+                      <motion.button
+                        whileHover={{ scale: 1.02, backgroundColor: "rgba(59, 130, 246, 0.1)" }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => navigate("/code-room")}
+                        className="flex-1 flex items-center justify-center gap-3 py-4 bg-blue-600/10 border border-blue-500/20 rounded-2xl text-[10px] font-black uppercase tracking-widest text-blue-400 hover:bg-blue-600 hover:text-white transition-all shadow-lg shadow-blue-500/5"
+                      >
+                        <Zap className="w-4 h-4" />
+                        CREATE NEW
+                      </motion.button>
                     </div>
                   </div>
-
-                  <motion.button
-                    whileHover={{ scale: 1.02, backgroundColor: "#fff" }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => navigate(`/user/course/${lastCourse.id}`)}
-                    className="mt-10 w-full py-5 bg-slate-100 text-black font-black rounded-2xl flex items-center justify-center gap-3 transition-all shadow-2xl shadow-white/5 active:shadow-none"
-                  >
-                    CONTINUE STUDY <ArrowRight className="w-5 h-5" />
-                  </motion.button>
-                </div>
-              </motion.div>
+                </motion.div>
+              </div>
             </div>
           </motion.div>
         </div>
@@ -359,6 +466,8 @@ const UserDashboard = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.3 }}
+
+
             className="p-8 bg-slate-900/40 border border-slate-800 rounded-[2rem] backdrop-blur-md flex items-center gap-6 group hover:border-purple-500/30 transition-all duration-500"
           >
             <motion.div
@@ -487,7 +596,9 @@ const UserDashboard = () => {
             System Core v4.0.0_Elite_Motion
           </div>
         </div>
-      </footer >
+      </footer>
+
+      <Footer />
 
       <style dangerouslySetInnerHTML={{
         __html: `

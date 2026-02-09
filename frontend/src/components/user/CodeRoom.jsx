@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../common/Navbar";
 import { Terminal, Plus, LogIn, ChevronLeft, Key, Hash, ShieldCheck } from "lucide-react";
 
 const CodeRoom = () => {
@@ -21,9 +20,7 @@ const CodeRoom = () => {
 
   return (
     <div className="min-h-screen bg-slate-900 text-white font-sans selection:bg-blue-500 selection:text-white">
-      <Navbar />
-
-      <main className="max-w-7xl mx-auto px-6 py-20 flex flex-col items-center justify-center min-h-[calc(100vh-80px)]">
+      <main className="max-w-7xl mx-auto px-6 flex flex-col items-center justify-center min-h-screen">
         {/* Header Section */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium mb-4">

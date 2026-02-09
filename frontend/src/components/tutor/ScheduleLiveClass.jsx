@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import api from "../../services/api";
-import Navbar from "../common/Navbar";
 import { Video, Calendar, Link as LinkIcon, Send, CheckCircle } from "lucide-react";
 
 const ScheduleLiveClass = () => {
@@ -34,9 +33,7 @@ const ScheduleLiveClass = () => {
 
   return (
     <div className="min-h-screen bg-slate-900 text-white font-sans selection:bg-blue-500 selection:text-white">
-      <Navbar />
-
-      <main className="max-w-3xl mx-auto px-6 py-20">
+      <main className="max-w-3xl mx-auto px-6 font-sans">
         <header className="mb-12 text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium mb-4">
             <Video className="w-4 h-4" />

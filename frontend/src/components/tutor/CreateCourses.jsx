@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import api from "../../services/api";
-import Navbar from "../common/Navbar";
 import {
   PlusCircle, BookOpen, IndianRupee,
   Image as ImageIcon, AlignLeft,
@@ -21,6 +20,22 @@ const CreateCourse = () => {
 
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  React.useEffect(() => {
+    const checkApproval = async () => {
+      try {
+        const res = await api.get("/user/profile");
+        if (!res.data.isApprovedTutor) {
+          alert("Your tutor profile must be approved by an administrator before you can create courses. Redirecting to portfolio...");
+          navigate("/tutor/portfolio");
+        }
+      } catch (err) {
+        console.error("Failed to verify tutor status");
+        navigate("/tutor");
+      }
+    };
+    checkApproval();
+  }, [navigate]);
 
   const handleChange = (e) => {
     setForm({
@@ -73,6 +88,13 @@ const CreateCourse = () => {
       return;
     }
 
+    // Curriculum Validation
+    const hasEmptyTitles = form.modules.some(m => !m.title.trim() || m.lessons.some(l => !l.title.trim()));
+    if (hasEmptyTitles) {
+      alert("Validation Error: All sections and lessons must have titles.");
+      return;
+    }
+
     try {
       setLoading(true);
       await api.post("/courses", form);
@@ -80,7 +102,8 @@ const CreateCourse = () => {
       navigate("/tutor/manage-courses");
     } catch (error) {
       console.error(error);
-      alert("Failed to create course");
+      const errorMsg = error.response?.data?.message || "Failed to create course";
+      alert(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -88,9 +111,7 @@ const CreateCourse = () => {
 
   return (
     <div className="min-h-screen bg-[#020617] text-white font-sans pb-20">
-      <Navbar />
-
-      <main className="max-w-5xl mx-auto px-6 py-20">
+      <main className="max-w-5xl mx-auto px-6">
         <header className="mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold uppercase tracking-widest mb-4">
             <Sparkles className="w-3.5 h-3.5" />

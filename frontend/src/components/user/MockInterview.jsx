@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import api from "../../services/api";
-import Navbar from "../common/Navbar";
 import { MessageSquare, Send, User, Bot, RefreshCw, Briefcase, BarChart, ChevronLeft, ShieldCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -61,9 +60,8 @@ const MockInterview = () => {
 
     return (
         <div className="min-h-screen bg-slate-950 text-white font-sans flex flex-col">
-            <Navbar />
 
-            <main className="flex-1 flex flex-col items-center justify-center max-w-5xl mx-auto w-full px-6 py-12">
+            <main className="flex-1 flex flex-col items-center justify-center max-w-5xl mx-auto w-full px-6 pb-12">
                 {mode === "setup" ? (
                     <div className="w-full max-w-xl animate-in fade-in zoom-in-95 duration-500">
                         <header className="text-center mb-10">

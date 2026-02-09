@@ -58,11 +58,11 @@ const Home = () => {
         {/* Animated Icon Container */}
         <div className="relative mb-8 transform hover:scale-110 transition-transform duration-700">
           <div className="absolute -inset-6 bg-blue-500/10 rounded-full blur-2xl animate-pulse"></div>
-          <div className="relative w-24 h-24 bg-slate-900 border border-slate-800 rounded-3xl flex items-center justify-center shadow-2xl">
-            <Terminal className="w-10 h-10 text-blue-400 animate-glitch" />
+          <div className="relative w-24 h-24 bg-slate-900 border border-slate-800 rounded-3xl flex items-center justify-center shadow-2xl overflow-hidden">
+            <img src="/integrax-logo.jpg" alt="IntegraX" className="w-full h-full object-cover opacity-80 animate-pulse" />
 
             {/* Corner Badges */}
-            <div className="absolute -top-1 -right-1 bg-blue-500 rounded-full p-1.5 shadow-lg shadow-blue-500/50">
+            <div className="absolute -top-1 -right-1 bg-blue-500 rounded-full p-1.5 shadow-lg shadow-blue-500/50 z-10">
               <Cpu className="w-3.5 h-3.5 text-white animate-spin-slow" />
             </div>
           </div>
@@ -77,7 +77,7 @@ const Home = () => {
               <span className="absolute inset-0 text-purple-500 opacity-70 animate-glitch-offset-2 -translate-x-1">LOADING...</span>
             </span>
           </h1>
-          <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.5em] opacity-30">Experimental Core v4.0.ALPHA</p>
+          <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.5em] opacity-30">IntegraX Core v4.0.ALPHA</p>
         </div>
 
         {/* Logs Console */}

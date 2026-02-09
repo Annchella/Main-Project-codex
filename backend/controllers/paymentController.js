@@ -9,14 +9,18 @@ const crypto = require("crypto");
 exports.createOrder = async (req, res) => {
     try {
         const { courseId } = req.body;
-        const userId = req.user.id;
+        const userId = req.user._id;
 
         const course = await Course.findById(courseId);
-        if (!course) return res.status(404).json({ message: "Course not found" });
+        if (!course) {
+            console.error("Create Order Error: Course not found", courseId);
+            return res.status(404).json({ message: "Course not found" });
+        }
 
         // Check if already enrolled
         const existingEnrollment = await Enrollment.findOne({ user: userId, course: courseId });
         if (existingEnrollment) {
+            console.error("Create Order Error: Already enrolled", { userId, courseId });
             return res.status(400).json({ message: "Already enrolled in this course" });
         }
 
@@ -96,7 +100,7 @@ exports.getAllPurchases = async (req, res) => {
  */
 exports.getTutorPurchases = async (req, res) => {
     try {
-        const tutorId = req.user.id;
+        const tutorId = req.user._id;
         const tutorCourses = await Course.find({ tutor: tutorId }).select("_id");
         const courseIds = tutorCourses.map(c => c._id);
 

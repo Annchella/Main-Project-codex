@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import Navbar from "../common/Navbar";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     Camera, Cpu, Database, Network, Atom, Globe,
@@ -69,9 +68,8 @@ const Profile = () => {
 
     return (
         <div className="min-h-screen bg-[#020617] text-white font-sans selection:bg-blue-500/30 overflow-x-hidden">
-            <Navbar />
 
-            <main className="pt-32 pb-20 max-w-5xl mx-auto px-6 relative z-10">
+            <main className="pb-20 max-w-5xl mx-auto px-6 relative z-10">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -166,8 +164,8 @@ const Profile = () => {
                                             whileTap={{ scale: 0.95 }}
                                             onClick={() => handleAvatarSelect(avatar.id)}
                                             className={`relative p-1 rounded-[2rem] transition-all duration-500 ${selectedAvatar === avatar.id
-                                                    ? "bg-gradient-to-br from-blue-500 to-indigo-600 shadow-[0_0_20px_rgba(59,130,246,0.3)]"
-                                                    : "bg-slate-800/30 hover:bg-slate-800/50 grayscale-50 hover:grayscale-0 shadow-none hover:shadow-lg hover:shadow-white/5"
+                                                ? "bg-gradient-to-br from-blue-500 to-indigo-600 shadow-[0_0_20px_rgba(59,130,246,0.3)]"
+                                                : "bg-slate-800/30 hover:bg-slate-800/50 grayscale-50 hover:grayscale-0 shadow-none hover:shadow-lg hover:shadow-white/5"
                                                 }`}
                                         >
                                             <div className="bg-[#020617] rounded-[1.8rem] p-4 flex flex-col items-center gap-4 transition-all overflow-hidden border border-slate-800">
@@ -250,8 +248,8 @@ const Profile = () => {
                                     disabled={isSaving}
                                     onClick={handleSaveProfile}
                                     className={`px-12 py-4 rounded-2xl flex items-center gap-3 font-black uppercase text-[10px] tracking-widest transition-all duration-500 shadow-2xl ${saveSuccess
-                                            ? "bg-emerald-500 text-white shadow-emerald-500/20"
-                                            : "bg-blue-600 text-white shadow-blue-500/20 hover:bg-blue-500"
+                                        ? "bg-emerald-500 text-white shadow-emerald-500/20"
+                                        : "bg-blue-600 text-white shadow-blue-500/20 hover:bg-blue-500"
                                         }`}
                                 >
                                     {isSaving ? (

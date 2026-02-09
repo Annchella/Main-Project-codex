@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import api from "../../services/api";
-import Navbar from "../common/Navbar";
 import {
     Plus, Edit, Trash2, CheckCircle,
     Clock, AlertCircle, Layers,
-    ExternalLink, ChevronRight
+    Users, ExternalLink, ChevronRight
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -55,9 +54,7 @@ const TutorCourseManagement = () => {
 
     return (
         <div className="min-h-screen bg-slate-900 text-white font-sans">
-            <Navbar />
-
-            <main className="max-w-7xl mx-auto px-6 py-20">
+            <main className="max-w-7xl mx-auto px-6">
                 <header className="mb-12 flex justify-between items-end gap-6 flex-wrap">
                     <div>
                         <h1 className="text-4xl font-extrabold tracking-tight mb-2">
@@ -104,12 +101,16 @@ const TutorCourseManagement = () => {
                                     <p className="text-slate-400 text-sm line-clamp-1 mb-6">{course.description}</p>
 
                                     <div className="flex flex-wrap gap-6 text-[11px] font-bold text-slate-500 uppercase tracking-widest">
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex items-center gap-2 group/metric hover:text-blue-400 transition-colors">
                                             <Layers className="w-4 h-4 text-blue-500" />
                                             <span>{course.modules?.length || 0} Modules</span>
                                         </div>
-                                        <div className="flex items-center gap-2">
-                                            <CheckCircle className="w-4 h-4 text-emerald-500" />
+                                        <div className="flex items-center gap-2 group/metric hover:text-emerald-400 transition-colors">
+                                            <Users className="w-4 h-4 text-emerald-500" />
+                                            <span className="text-emerald-500 font-black">{course.studentCount || 0} Students</span>
+                                        </div>
+                                        <div className="flex items-center gap-2 group/metric hover:text-white transition-colors">
+                                            <CheckCircle className="w-4 h-4 text-slate-500" />
                                             <span>{course.isApproved ? "Public" : "Private (Hidden)"}</span>
                                         </div>
                                     </div>
@@ -124,7 +125,7 @@ const TutorCourseManagement = () => {
                                     </button>
                                     <div className="flex gap-3">
                                         <button
-                                            onClick={() => {/* Edit Logic */ }}
+                                            onClick={() => navigate(`/tutor/courses/${course._id}/edit`)}
                                             className="flex-1 p-3 bg-blue-600/10 border border-blue-500/20 text-blue-400 rounded-xl hover:bg-blue-600/20 transition-all"
                                         >
                                             <Edit className="w-5 h-5" />

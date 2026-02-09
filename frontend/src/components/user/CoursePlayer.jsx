@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../../services/api";
-import Navbar from "../common/Navbar";
 import {
     Play, CheckCircle, ChevronRight, ChevronLeft,
     BookOpen, Layers, Video, FileText, Star, AlertCircle
 } from "lucide-react";
+import ChatBox from "../common/ChatBox";
 
 const CoursePlayer = () => {
     const { courseId } = useParams();
@@ -77,8 +77,6 @@ const CoursePlayer = () => {
 
     return (
         <div className="h-screen bg-slate-950 text-white font-sans flex flex-col overflow-hidden">
-            <Navbar />
-
             <div className="flex-1 flex overflow-hidden">
                 {/* LEFT: Sidebar Navigation */}
                 <aside className="w-80 bg-slate-900 border-r border-slate-800 flex flex-col overflow-y-auto custom-scrollbar">
@@ -173,6 +171,19 @@ const CoursePlayer = () => {
                     Next Unit <ChevronRight className="w-4 h-4 text-blue-400 group-hover:translate-x-1 transition-transform" />
                 </button>
             </footer>
+
+            {/* Float Chat for Doubts */}
+            {course && (
+                <ChatBox
+                    courseId={course._id || course.id}
+                    courseTitle={course.title}
+                    tutorId={course.tutor?._id || course.tutor}
+                    tutorName={course.tutor?.name || "Instructor"}
+                    studentId={localStorage.getItem("userId")}
+                    studentName={localStorage.getItem("name") || "Student"}
+                    isTutor={false}
+                />
+            )}
         </div>
     );
 };

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import api from "../../services/api";
-import Navbar from "../common/Navbar";
 import { Trophy, Award, Star, TrendingUp, Users, ChevronRight, Medal } from "lucide-react";
 
 const Leaderboard = () => {
@@ -32,9 +31,8 @@ const Leaderboard = () => {
 
     return (
         <div className="min-h-screen bg-slate-900 text-white font-sans">
-            <Navbar />
 
-            <main className="max-w-5xl mx-auto px-6 py-20">
+            <main className="max-w-5xl mx-auto px-6 pb-20">
                 <header className="text-center mb-16">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium mb-4">
                         <Trophy className="w-4 h-4" />

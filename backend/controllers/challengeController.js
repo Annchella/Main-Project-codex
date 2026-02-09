@@ -34,6 +34,12 @@ exports.getChallengeById = async (req, res) => {
 exports.submitChallenge = async (req, res) => {
     try {
         const { challengeId, code, language } = req.body;
+
+        // Only users with role "user" can submit challenges
+        if (req.user.role !== "user") {
+            return res.status(403).json({ message: "Only students can submit challenges" });
+        }
+
         const challenge = await Challenge.findById(challengeId);
         if (!challenge) return res.status(404).json({ message: "Challenge not found" });
 
@@ -57,6 +63,7 @@ exports.submitChallenge = async (req, res) => {
             );
 
             const actualOutput = (submitRes.data.stdout || "").trim();
+            const errorOutput = (submitRes.data.stderr || submitRes.data.compile_output || "").trim();
             const expectedOutput = (testCase.expectedOutput || "").trim();
             const passed = actualOutput === expectedOutput;
 
@@ -66,6 +73,7 @@ exports.submitChallenge = async (req, res) => {
                 input: testCase.input,
                 expected: expectedOutput,
                 actual: actualOutput,
+                error: errorOutput,
                 passed,
                 status: submitRes.data.status?.description,
             });
@@ -75,18 +83,27 @@ exports.submitChallenge = async (req, res) => {
         let leveledUp = false;
 
         if (allPassed) {
-            xpAwarded = 50; // Standard XP for success
-            const user = await User.findById(req.user._id);
-            if (user) {
-                user.xp += xpAwarded;
+            try {
+                xpAwarded = 50;
+                const user = await User.findById(req.user._id);
+                if (user) {
+                    user.xp = (user.xp || 0) + xpAwarded;
 
-                // Check level up
-                if (user.xp >= getXPForLevel(user.level)) {
-                    user.xp -= getXPForLevel(user.level);
-                    user.level += 1;
-                    leveledUp = true;
+                    // Check level up (Level 1: 100, Level 2: 200, etc.)
+                    const xpNeeded = getXPForLevel(user.level || 1);
+                    if (user.xp >= xpNeeded) {
+                        user.xp -= xpNeeded;
+                        user.level = (user.level || 1) + 1;
+                        leveledUp = true;
+                    }
+                    await user.save();
+                    console.log(`XP Credited: User ${user.email} now has ${user.xp} XP and is Level ${user.level}`);
                 }
-                await user.save();
+            } catch (err) {
+                console.error("XP Crediting Error:", err.message);
+                // We don't fail the whole request if only XP awarding fails, 
+                // but we should set xpAwarded back to 0 for the response.
+                xpAwarded = 0;
             }
         }
 

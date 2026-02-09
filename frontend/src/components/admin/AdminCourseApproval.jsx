@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import api from "../../services/api";
-import Navbar from "../common/Navbar";
 import {
     Check, X, Eye,
     ShieldCheck, AlertCircle,
@@ -36,9 +35,7 @@ const AdminCourseApproval = () => {
 
     return (
         <div className="min-h-screen bg-slate-900 text-white font-sans">
-            <Navbar />
-
-            <main className="max-w-6xl mx-auto px-6 py-20">
+            <main className="max-w-6xl mx-auto px-6">
                 <header className="mb-12">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-widest mb-4">
                         <ShieldCheck className="w-3.5 h-3.5" />

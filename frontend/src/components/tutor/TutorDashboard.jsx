@@ -1,25 +1,52 @@
 import React from "react";
-import Navbar from "../common/Navbar";
 import { useNavigate } from "react-router-dom";
+import api from "../../services/api";
 import {
   BookOpen, Video, Users,
   PlusCircle, LayoutDashboard,
   Settings, ArrowRight, Play,
   BarChart3, Award
 } from "lucide-react";
+import Footer from "../common/Footer";
 
 const TutorDashboard = () => {
   const navigate = useNavigate();
+  const [user, setUser] = React.useState(null);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await api.get("/user/profile");
+        setUser(res.data);
+      } catch (err) {
+        console.error("Failed to fetch user profile");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUser();
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-900 text-white font-sans">
-      <Navbar />
-
-      <main className="max-w-7xl mx-auto px-6 py-20">
+      <main className="max-w-7xl mx-auto px-6">
         <div className="grid lg:grid-cols-2 gap-16 items-center mb-24">
           <div className="space-y-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium">
-              Professional Instructor Portal
+            <div className="flex flex-wrap gap-4 items-center">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium">
+                Professional Instructor Portal
+              </div>
+
+              {user && (
+                <div className={`px-4 py-1 rounded-full border text-[10px] font-black uppercase tracking-widest flex items-center gap-2 ${user.isApprovedTutor ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' :
+                  user.tutorStatus === 'pending' ? 'bg-blue-500/10 border-blue-500/20 text-blue-400' :
+                    'bg-orange-500/10 border-orange-500/20 text-orange-400'
+                  }`}>
+                  <div className={`w-1.5 h-1.5 rounded-full ${user.isApprovedTutor ? 'bg-emerald-400' : 'bg-orange-400'}`}></div>
+                  STATUS: {user.isApprovedTutor ? 'VERIFIED' : user.tutorStatus === 'pending' ? 'UNDER REVIEW' : 'ACTION REQUIRED'}
+                </div>
+              )}
             </div>
 
             <h1 className="text-5xl lg:text-7xl font-extrabold tracking-tight leading-tight">
@@ -36,10 +63,12 @@ const TutorDashboard = () => {
 
             <div className="flex gap-4">
               <button
-                onClick={() => navigate("/tutor/create-course")}
-                className="px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-2xl shadow-lg shadow-blue-600/20 transition-all hover:scale-105 active:scale-95 flex items-center gap-2"
+                onClick={() => user?.isApprovedTutor ? navigate("/tutor/create-course") : navigate("/tutor/portfolio")}
+                className={`px-8 py-4 text-white font-black rounded-2xl shadow-lg transition-all hover:scale-105 active:scale-95 flex items-center gap-2 ${user?.isApprovedTutor ? 'bg-blue-600 hover:bg-blue-500 shadow-blue-600/20' : 'bg-slate-700 hover:bg-slate-600 shadow-slate-900/40 cursor-pointer'
+                  }`}
               >
-                Launch New Course <PlusCircle className="w-5 h-5" />
+                {user?.isApprovedTutor ? 'Launch New Course' : 'Complete Portfolio First'}
+                {user?.isApprovedTutor ? <PlusCircle className="w-5 h-5" /> : <ArrowRight className="w-5 h-5" />}
               </button>
               <button
                 onClick={() => navigate("/code-room")}
@@ -97,6 +126,13 @@ const TutorDashboard = () => {
               color="from-purple-500/10 to-transparent"
             />
             <FeatureItem
+              icon={<Users className="w-8 h-8 text-cyan-400" />}
+              title="Enrollment List"
+              desc="View and manage your active student directory."
+              onClick={() => navigate("/tutor/enrollments")}
+              color="from-cyan-500/10 to-transparent"
+            />
+            <FeatureItem
               icon={<Video className="w-8 h-8 text-pink-400" />}
               title="Live Masterclass"
               desc="Schedule and launch real-time collaborative coding sessions."
@@ -113,6 +149,7 @@ const TutorDashboard = () => {
           </div>
         </section>
       </main>
+      <Footer />
     </div>
   );
 };

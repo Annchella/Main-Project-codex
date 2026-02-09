@@ -1,5 +1,4 @@
 import React from "react";
-import Navbar from "../common/Navbar";
 import { useNavigate } from "react-router-dom";
 import {
     ShieldCheck, Users, BarChart3,
@@ -12,9 +11,7 @@ const AdminDashboard = () => {
 
     return (
         <div className="min-h-screen bg-slate-900 text-white font-sans">
-            <Navbar />
-
-            <main className="max-w-7xl mx-auto px-6 py-20">
+            <main className="max-w-7xl mx-auto px-6">
                 <header className="mb-16">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-widest mb-4">
                         <ShieldCheck className="w-4 h-4" />
@@ -42,11 +39,11 @@ const AdminDashboard = () => {
                     />
                 </div>
 
-                <div className="grid lg:grid-cols-3 gap-8">
-                    {/* Primary Action Card */}
+                {/* Primary Action Card */}
+                <div className="lg:col-span-2 grid md:grid-cols-2 gap-8">
                     <div
                         onClick={() => navigate("/admin/approvals")}
-                        className="lg:col-span-2 group relative p-10 rounded-[2.5rem] bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700/50 hover:border-slate-500/50 transition-all cursor-pointer overflow-hidden"
+                        className="group relative p-10 rounded-[2.5rem] bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700/50 hover:border-slate-500/50 transition-all cursor-pointer overflow-hidden"
                     >
                         <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
                             <ShieldCheck className="w-48 h-48 -rotate-12" />
@@ -56,46 +53,64 @@ const AdminDashboard = () => {
                             <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-8 border border-emerald-500/20">
                                 <ShieldCheck className="w-8 h-8 text-emerald-400" />
                             </div>
-                            <h2 className="text-3xl font-bold mb-4">Content Approval Workflow</h2>
-                            <p className="text-slate-400 max-w-md mb-8 leading-relaxed">
-                                Review newly submitted courses from tutors. Verify curriculum quality, video content, and project scope before authorizing public access.
+                            <h2 className="text-3xl font-black uppercase italic leading-none mb-4">Course <br />Approvals</h2>
+                            <p className="text-slate-400 text-xs mb-8 leading-relaxed font-bold uppercase tracking-widest">
+                                Review submitted curriculum quality.
                             </p>
-                            <div className="flex items-center gap-2 text-emerald-400 font-bold text-sm tracking-widest uppercase">
-                                Launch Approval Dashboard <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                            <div className="flex items-center gap-2 text-emerald-400 font-bold text-[10px] tracking-widest uppercase">
+                                Launch Module <ChevronRight className="w-4 h-4" />
                             </div>
                         </div>
                     </div>
 
-                    {/* Secondary Actions */}
-                    <div className="space-y-6">
-                        <AdminActionItem
-                            icon={<BarChart3 className="w-5 h-5" />}
-                            title="Revenue Ledger"
-                            desc="View all purchase transactions."
-                            onClick={() => navigate("/admin/purchases")}
-                        />
-                        <AdminActionItem
-                            icon={<PlusCircle className="w-5 h-5" />}
-                            title="Direct Course Creation"
-                            desc="Bypass tutor flow to add courses."
-                            onClick={() => navigate("/tutor/create-course")}
-                        />
-                        <AdminActionItem
-                            icon={<Users className="w-5 h-5" />}
-                            title="User Management"
-                            desc="Manage roles and permissions."
-                        />
-                        <AdminActionItem
-                            icon={<BarChart3 className="w-5 h-5" />}
-                            title="Platform Analytics"
-                            desc="Track engagement metrics."
-                        />
-                        <AdminActionItem
-                            icon={<Settings className="w-5 h-5" />}
-                            title="System Settings"
-                            desc="Configure global parameters."
-                        />
+                    <div
+                        onClick={() => navigate("/admin/tutor-approvals")}
+                        className="group relative p-10 rounded-[2.5rem] bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700/50 hover:border-slate-500/50 transition-all cursor-pointer overflow-hidden"
+                    >
+                        <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <Users className="w-48 h-48 -rotate-12" />
+                        </div>
+
+                        <div className="relative z-10">
+                            <div className="w-16 h-16 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-8 border border-blue-500/20">
+                                <Users className="w-8 h-8 text-blue-400" />
+                            </div>
+                            <h2 className="text-3xl font-black uppercase italic leading-none mb-4">Tutor <br />Verification</h2>
+                            <p className="text-slate-400 text-xs mb-8 leading-relaxed font-bold uppercase tracking-widest">
+                                Authorize educator credentials.
+                            </p>
+                            <div className="flex items-center gap-2 text-blue-400 font-bold text-[10px] tracking-widest uppercase">
+                                Verify Talent <ChevronRight className="w-4 h-4" />
+                            </div>
+                        </div>
                     </div>
+                </div>
+
+                {/* Secondary Actions */}
+                <div className="space-y-6">
+                    <AdminActionItem
+                        icon={<BarChart3 className="w-5 h-5" />}
+                        title="Revenue Ledger"
+                        desc="View all purchase transactions."
+                        onClick={() => navigate("/admin/purchases")}
+                    />
+                    <AdminActionItem
+                        icon={<Layers className="w-5 h-5" />}
+                        title="Master Course List"
+                        desc="Admin audit: Edit or delete any content."
+                        onClick={() => navigate("/admin/course-management")}
+                    />
+                    <AdminActionItem
+                        icon={<PlusCircle className="w-5 h-5" />}
+                        title="Direct Creation"
+                        desc="Bypass tutor flow to add courses."
+                        onClick={() => navigate("/tutor/create-course")}
+                    />
+                    <AdminActionItem
+                        icon={<Settings className="w-5 h-5" />}
+                        title="System Settings"
+                        desc="Configure global parameters."
+                    />
                 </div>
             </main>
         </div>

@@ -29,6 +29,27 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    bio: {
+      type: String,
+      default: "",
+    },
+    specialization: {
+      type: String,
+      default: "",
+    },
+    photo: {
+      type: String,
+      default: "",
+    },
+    isApprovedTutor: {
+      type: Boolean,
+      default: false,
+    },
+    tutorStatus: {
+      type: String,
+      enum: ["pending", "approved", "rejected", "not_submitted"],
+      default: "not_submitted",
+    },
     xp: {
       type: Number,
       default: 0,
