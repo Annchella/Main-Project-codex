@@ -101,10 +101,10 @@ const AdminDashboard = () => {
                         onClick={() => navigate("/admin/course-management")}
                     />
                     <AdminActionItem
-                        icon={<PlusCircle className="w-5 h-5" />}
-                        title="Direct Creation"
-                        desc="Bypass tutor flow to add courses."
-                        onClick={() => navigate("/tutor/create-course")}
+                        icon={<Users className="w-5 h-5" />}
+                        title="Global User Registry"
+                        desc="Manage all student and tutor accounts."
+                        onClick={() => navigate("/admin/manage-users")}
                     />
                     <AdminActionItem
                         icon={<Settings className="w-5 h-5" />}

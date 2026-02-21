@@ -118,6 +118,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
                 { name: "Support", path: "/admin/support", icon: LifeBuoy },
                 { name: "Tutors", path: "/admin/tutor-approvals", icon: Users },
                 { name: "Courses", path: "/admin/course-management", icon: Layers },
+                { name: "Users", path: "/admin/manage-users", icon: Users },
                 { name: "Purchases", path: "/admin/purchases", icon: BarChart3 },
             ],
             themeColor: "emerald",

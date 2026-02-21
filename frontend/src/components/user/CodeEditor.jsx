@@ -6,7 +6,7 @@ import api from "../../services/api";
 import {
   Terminal, Play, MessageSquare, Send,
   ChevronRight, RefreshCw, Hash, Users,
-  Settings, Clock, ShieldCheck, XCircle
+  Settings, Clock, ShieldCheck, XCircle, User
 } from "lucide-react";
 
 const CodeEditor = () => {
@@ -23,6 +23,8 @@ const CodeEditor = () => {
   const [language, setLanguage] = useState("javascript");
   const [status, setStatus] = useState("Connecting");
   const [loading, setLoading] = useState(false);
+  const [roomMembers, setRoomMembers] = useState([]);
+  const [showMembers, setShowMembers] = useState(false);
 
   // 💬 Chat state
   const [messages, setMessages] = useState([]);
@@ -43,7 +45,14 @@ const CodeEditor = () => {
     });
 
     socket.on("joined", () => {
+      console.log("Socket joined room. Status: Online");
       setStatus("Online");
+    });
+
+    // 👥 Room members update
+    socket.on("room-users", (users) => {
+      console.log("Received room members:", users);
+      setRoomMembers(users);
     });
 
     // 🔁 Code sync
@@ -56,15 +65,17 @@ const CodeEditor = () => {
       setMessages((prev) => [...prev, msg]);
     });
 
-    socket.emit("join-room", { roomId, password });
+    console.log("Joining room with userName:", userName);
+    socket.emit("join-room", { roomId, password, userName });
 
     return () => {
       socket.off("room-error");
       socket.off("joined");
+      socket.off("room-users");
       socket.off("receive-code");
       socket.off("receive-message");
     };
-  }, [roomId, password, navigate]);
+  }, [roomId, password, navigate, userName]);
 
   useEffect(() => {
     // Scroll chat to bottom
@@ -138,9 +149,33 @@ const CodeEditor = () => {
               <span className={`w-1.5 h-1.5 rounded-full ${status === 'Online' ? 'bg-emerald-400 animate-pulse' : 'bg-yellow-400'}`}></span>
               {status.toUpperCase()}
             </div>
-            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-800/80 text-[11px] font-bold text-slate-400 border border-slate-700/50">
-              <Users className="w-3 h-3" />
-              ACTIVE SESSION
+            <div className="relative">
+              <button
+                onClick={() => setShowMembers(!showMembers)}
+                className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-800/80 text-[11px] font-bold text-slate-400 border border-slate-700/50 hover:bg-slate-800 hover:text-white transition-colors"
+              >
+                <Users className="w-3 h-3" />
+                {roomMembers.length} MEMBERS
+              </button>
+
+              {showMembers && (
+                <div className="absolute top-full left-0 mt-2 w-48 bg-slate-900 border border-slate-700 rounded-xl shadow-xl overflow-hidden z-50">
+                  <div className="p-2 border-b border-slate-800 text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-3">
+                    Connected Members
+                  </div>
+                  <div className="max-h-48 overflow-y-auto custom-scrollbar">
+                    {roomMembers.map((member, idx) => (
+                      <div key={idx} className="flex items-center gap-2 px-3 py-2 hover:bg-slate-800 transition-colors">
+                        <div className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 text-xs">
+                          {member.name.charAt(0).toUpperCase()}
+                        </div>
+                        <span className="text-xs font-medium text-slate-300 truncate">{member.name}</span>
+                        {member.name === userName && <span className="text-[9px] bg-slate-700 text-slate-400 px-1 rounded ml-auto">YOU</span>}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

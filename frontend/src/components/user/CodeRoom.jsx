@@ -6,12 +6,24 @@ const CodeRoom = () => {
   const [mode, setMode] = useState("");
   const [roomId, setRoomId] = useState("");
   const [password, setPassword] = useState("");
+  const [guestName, setGuestName] = useState("");
   const navigate = useNavigate();
+
+  const storedName = localStorage.getItem("name");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!roomId || !password) {
       return;
+    }
+
+    if (!storedName && !guestName) {
+      alert("Please enter a display name");
+      return;
+    }
+
+    if (!storedName && guestName) {
+      localStorage.setItem("name", guestName);
     }
 
     localStorage.setItem("roomPassword", password);
@@ -90,6 +102,21 @@ const CodeRoom = () => {
               </div>
 
               <div className="space-y-4">
+                {!storedName && (
+                  <div>
+                    <label className="block text-sm font-medium text-slate-400 mb-2 ml-1">Display Name</label>
+                    <div className="relative">
+                      <div className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 flex items-center justify-center font-bold text-xs" >ID</div>
+                      <input
+                        placeholder="Your Name"
+                        className="w-full bg-slate-900/50 border border-slate-700 rounded-xl py-4 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all placeholder:text-slate-700"
+                        onChange={(e) => setGuestName(e.target.value)}
+                        required
+                      />
+                    </div>
+                  </div>
+                )}
+
                 <div>
                   <label className="block text-sm font-medium text-slate-400 mb-2 ml-1">Room Identity</label>
                   <div className="relative">

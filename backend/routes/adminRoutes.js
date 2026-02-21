@@ -5,8 +5,14 @@ const {
     getPendingTutors,
     approveRejectTutor,
     getAllCoursesAdmin,
-    deleteCourseAdmin
+    deleteCourseAdmin,
+    getAllUsers,
+    deleteUser
 } = require("../controllers/adminController");
+
+// User Management Routes
+router.get("/users", protect, adminOnly, getAllUsers);
+router.delete("/users/:id", protect, adminOnly, deleteUser);
 
 // Tutor Approval Routes
 router.get("/tutors/pending", protect, adminOnly, getPendingTutors);

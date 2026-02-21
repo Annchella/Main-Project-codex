@@ -1,21 +1,44 @@
 const SupportMessage = require("../models/SupportMessage");
 const rooms = {}; // roomId : password
+const roomUsers = {}; // roomId : [{ socketId, name }]
 
 module.exports = (io) => {
   io.on("connection", (socket) => {
     console.log("Socket connected:", socket.id);
 
     // 🔐 JOIN ROOM WITH PASSWORD
-    socket.on("join-room", ({ roomId, password }) => {
-      console.log("Join request:", roomId);
+    socket.on("join-room", ({ roomId, password, userName }) => {
+      console.log(`Join request for room ${roomId} by ${userName}`);
+      console.log(`Current roomUsers for ${roomId}:`, roomUsers[roomId]);
 
       if (!rooms[roomId]) {
+        // Create new room
         rooms[roomId] = password;
+        roomUsers[roomId] = [];
+
         socket.join(roomId);
+
+        // Add user to room list
+        const user = { socketId: socket.id, name: userName || "Anonymous" };
+        roomUsers[roomId].push(user);
+        console.log(`Created room. Added user:`, user);
+
         socket.emit("joined", "Room created");
+        io.to(roomId).emit("room-users", roomUsers[roomId]); // Broadcast updated list
+
       } else if (rooms[roomId] === password) {
+        // Join existing room
         socket.join(roomId);
+
+        // Add user if not already present (prevent duplicates if re-joining)
+        if (!roomUsers[roomId]) roomUsers[roomId] = [];
+        const existingUser = roomUsers[roomId].find(u => u.socketId === socket.id);
+        if (!existingUser) {
+          roomUsers[roomId].push({ socketId: socket.id, name: userName || "Anonymous" });
+        }
+
         socket.emit("joined", "Joined room");
+        io.to(roomId).emit("room-users", roomUsers[roomId]); // Broadcast updated list
       } else {
         socket.emit("room-error", "❌ Invalid room password");
       }
@@ -126,6 +149,16 @@ module.exports = (io) => {
 
     socket.on("disconnect", () => {
       console.log("Socket disconnected:", socket.id);
+
+      // Remove user from any room they were in
+      for (const roomId in roomUsers) {
+        const index = roomUsers[roomId].findIndex(u => u.socketId === socket.id);
+        if (index !== -1) {
+          roomUsers[roomId].splice(index, 1);
+          io.to(roomId).emit("room-users", roomUsers[roomId]); // Broadcast updated list
+          break; // User can only be in one code room at a time (usually)
+        }
+      }
     });
   });
 };

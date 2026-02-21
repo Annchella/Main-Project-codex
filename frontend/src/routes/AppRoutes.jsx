@@ -37,6 +37,7 @@ import TutorEnrollments from "../components/tutor/TutorEnrollments";
 import TutorPortfolio from "../components/tutor/TutorPortfolio";
 import AdminTutorApproval from "../components/admin/AdminTutorApproval";
 import AdminCourseManagement from "../components/admin/AdminCourseManagement";
+import ManageUsers from "../components/admin/ManageUsers";
 
 // Protected Route
 import ProtectedRoute from "./ProtectedRoute";
@@ -384,6 +385,16 @@ const AppRoutes = () => {
             <ProtectedRoute role="admin">
               <Layout>
                 <AdminCourseManagement />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/manage-users"
+          element={
+            <ProtectedRoute role="admin">
+              <Layout>
+                <ManageUsers />
               </Layout>
             </ProtectedRoute>
           }

@@ -67,3 +67,32 @@ exports.deleteCourseAdmin = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+/**
+ * Admin: Get all users (Students & Tutors)
+ */
+exports.getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find({ role: { $in: ["user", "tutor"] } }).select("-password");
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+/**
+ * Admin: Delete a user
+ */
+exports.deleteUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user = await User.findById(id);
+
+        if (!user) return res.status(404).json({ message: "User not found" });
+        if (user.role === "admin") return res.status(403).json({ message: "Cannot delete an admin" });
+
+        await User.findByIdAndDelete(id);
+        res.json({ message: "User deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
